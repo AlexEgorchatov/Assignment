@@ -45,7 +45,12 @@
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding WebAddress}"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding WebAddress, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Enter" Command="{Binding NavigateCommand}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+
                             <Button Grid.Row="0" Grid.Column="2" Command="{Binding NavigateCommand}" Content="GO"/>
                             <controls:InternetWebBrowser Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Uri="{Binding Uri}"/>
                         </Grid>
