@@ -1,7 +1,8 @@
-﻿using Prism.Commands;
+﻿using Assignment.Controls;
+using Prism.Commands;
 using Prism.Mvvm;
 using System.Threading.Tasks;
-using System.Timers;
+using mshtml;
 
 namespace Assignment.ViewModels
 {
@@ -9,17 +10,50 @@ namespace Assignment.ViewModels
     {
         #region Private Fields
 
+        private DelegateCommand _backCommand;
+        private DelegateCommand _forwardCommand;
         private string _header;
         private double _headerWidth;
         private bool _isRefreshVisible;
         private DelegateCommand _navigateCommand;
         private DelegateCommand _refreshCommand;
-        private string _uri;
         private string _webAddress;
 
         #endregion
 
         #region Public Properties
+
+        public DelegateCommand BackCommand
+        {
+            get
+            {
+                return _backCommand ?? (_backCommand = new DelegateCommand(async () =>
+                {
+                    try
+                    {
+                        Browser.Browser.GoBack();
+                    }
+                    catch { }
+                }, () => Browser.Browser.CanGoBack));
+            }
+        }
+
+        public InternetWebBrowser Browser { get; }
+
+        public DelegateCommand ForwardCommand
+        {
+            get
+            {
+                return _forwardCommand ?? (_forwardCommand = new DelegateCommand(async () =>
+                {
+                    try
+                    {
+                        Browser.Browser.GoForward();
+                    }
+                    catch { }
+                }, () => Browser.Browser.CanGoForward));
+            }
+        }
 
         public string Header
         {
@@ -45,7 +79,11 @@ namespace Assignment.ViewModels
             {
                 return _navigateCommand ?? (_navigateCommand = new DelegateCommand(() =>
                 {
-                    Uri = "https://" + WebAddress;
+                    try
+                    {
+                        Browser.Browser.Source = string.IsNullOrEmpty(WebAddress) ? null : new System.Uri("https://" + WebAddress);
+                    }
+                    catch { }
                 }));
             }
         }
@@ -57,17 +95,15 @@ namespace Assignment.ViewModels
                 return _refreshCommand ?? (_refreshCommand = new DelegateCommand(async () =>
                 {
                     IsRefreshVisible = false;
-                    NavigateCommand.Execute();
-                    await Task.Delay(500);
+                    try
+                    {
+                        Browser.Browser.Source = string.IsNullOrEmpty(WebAddress) ? null : new System.Uri(WebAddress);
+                    }
+                    catch { }
+                    await Task.Delay(500);//HTTP request imitation
                     IsRefreshVisible = true;
                 }));
             }
-        }
-
-        public string Uri
-        {
-            get { return _uri; }
-            set { SetProperty(ref _uri, value); }
         }
 
         public string WebAddress
@@ -85,6 +121,21 @@ namespace Assignment.ViewModels
             Header = "New Tab";
             HeaderWidth = headerWidth;
             IsRefreshVisible = true;
+            Browser = new InternetWebBrowser();
+            Browser.Browser.Navigated += OnBrowserNavigated;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void OnBrowserNavigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            WebAddress = e.Uri == null ? "" : e.Uri.OriginalString;
+            var doc = Browser.Browser.Document as HTMLDocument;
+            Header = doc.title == "" ? Header : doc.title;
+            ForwardCommand.RaiseCanExecuteChanged();
+            BackCommand.RaiseCanExecuteChanged();
         }
 
         #endregion

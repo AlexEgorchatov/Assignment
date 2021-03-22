@@ -30,7 +30,9 @@ namespace Assignment.ViewModels
             {
                 return _addTabCommand ?? (_addTabCommand = new DelegateCommand(() =>
                 {
-                    Tabs.Add(new TabViewModel(_headerWidth));
+                    var tab = new TabViewModel(_headerWidth);
+                    Tabs.Add(tab);
+                    SelectedTab = tab;
                 }));
             }
         }

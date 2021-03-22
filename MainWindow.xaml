@@ -3,9 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Assignment"
         xmlns:tools="clr-namespace:Assignment.Tools"
-        xmlns:controls="clr-namespace:Assignment.Controls"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         x:Name="window"
@@ -33,7 +31,7 @@
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
                             
-                            <TextBlock Grid.Column="0" Text="{Binding Header}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Grid.Column="0" Text="{Binding Header}" VerticalAlignment="Center" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"/>
                             <Button Grid.Column="1" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}, Path=DataContext.CloseTabCommand}" CommandParameter="{Binding .}" Style="{StaticResource CloseTabButtonStyle}"/>
                         </Grid>
                     </DataTemplate>
@@ -56,7 +54,7 @@
                                 <Button Command="{Binding BackCommand}" Style="{StaticResource BackButtonStyle}"/>
                                 <Button Command="{Binding ForwardCommand}" Style="{StaticResource ForwardButtonStyle}"/>
                                 <Button Command="{Binding RefreshCommand}" Style="{StaticResource RefreshButtonStyle}" Visibility="{Binding IsRefreshVisible, Converter={StaticResource GenericBooleanConverter}}"/>
-                                <Button Command="{Binding StopCommand}" Style="{StaticResource StopButtonStyle}" Visibility="{Binding IsRefreshVisible, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}"/>
+                                <Button Style="{StaticResource StopButtonStyle}" Visibility="{Binding IsRefreshVisible, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}"/>
                             </StackPanel>
                             
                             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding WebAddress, UpdateSourceTrigger=PropertyChanged}">
@@ -65,8 +63,8 @@
                                 </TextBox.InputBindings>
                             </TextBox>
 
-                            <Button Grid.Row="0" Grid.Column="2" Command="{Binding NavigateCommand}" Style="{StaticResource MenuButtonStyle}"/>
-                            <controls:InternetWebBrowser Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Uri="{Binding Uri, Mode=TwoWay}"/>
+                            <Button Grid.Row="0" Grid.Column="2" Style="{StaticResource MenuButtonStyle}"/>
+                            <ContentPresenter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Content="{Binding Browser}"/>
                         </Grid>
                     </DataTemplate>
                 </TabControl.ContentTemplate>
