@@ -11,16 +11,24 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="37"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Grid.RowSpan="2">
             <TabControl ItemsSource="{Binding Tabs}">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Height="30" Width="{Binding HeaderWidth}">
+                            <TextBlock Text="{Binding Header}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" TextTrimming="CharacterEllipsis"/>
+                        </Border>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
             </TabControl>
         </Grid>
 
-        <Grid Grid.Row="0" Background="Transparent">
+        <Grid Grid.Row="0" Background="Transparent" Panel.ZIndex="100">
+            <Button Command="{Binding AddTabCommand}" Content="Add" Margin="{Binding ButtonAddMargin}" HorizontalAlignment="Left"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="Min"/>
                 <Button Content="Max"/>
