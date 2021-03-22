@@ -1,5 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
+using System.Threading.Tasks;
+using System.Timers;
 
 namespace Assignment.ViewModels
 {
@@ -9,10 +11,10 @@ namespace Assignment.ViewModels
 
         private string _header;
         private double _headerWidth;
-
+        private bool _isRefreshVisible;
         private DelegateCommand _navigateCommand;
+        private DelegateCommand _refreshCommand;
         private string _uri;
-
         private string _webAddress;
 
         #endregion
@@ -31,6 +33,12 @@ namespace Assignment.ViewModels
             set { SetProperty(ref _headerWidth, value); }
         }
 
+        public bool IsRefreshVisible
+        {
+            get { return _isRefreshVisible; }
+            set { SetProperty(ref _isRefreshVisible, value); }
+        }
+
         public DelegateCommand NavigateCommand
         {
             get
@@ -38,6 +46,20 @@ namespace Assignment.ViewModels
                 return _navigateCommand ?? (_navigateCommand = new DelegateCommand(() =>
                 {
                     Uri = "https://" + WebAddress;
+                }));
+            }
+        }
+
+        public DelegateCommand RefreshCommand
+        {
+            get
+            {
+                return _refreshCommand ?? (_refreshCommand = new DelegateCommand(async () =>
+                {
+                    IsRefreshVisible = false;
+                    NavigateCommand.Execute();
+                    await Task.Delay(500);
+                    IsRefreshVisible = true;
                 }));
             }
         }
@@ -62,6 +84,7 @@ namespace Assignment.ViewModels
         {
             Header = "New Tab";
             HeaderWidth = headerWidth;
+            IsRefreshVisible = true;
         }
 
         #endregion

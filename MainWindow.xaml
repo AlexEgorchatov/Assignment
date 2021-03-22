@@ -8,7 +8,14 @@
         xmlns:controls="clr-namespace:Assignment.Controls"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowStyle="None">
+        x:Name="window"
+        Height="450" Width="800" WindowStyle="None">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <tools:GenericBooleanConverter x:Key="GenericBooleanConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -17,7 +24,7 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Grid.RowSpan="2">
-            <TabControl ItemsSource="{Binding Tabs}">
+            <TabControl ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <Grid Height="30" Width="{Binding HeaderWidth}">
@@ -27,7 +34,7 @@
                             </Grid.ColumnDefinitions>
                             
                             <TextBlock Grid.Column="0" Text="{Binding Header}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" TextTrimming="CharacterEllipsis"/>
-                            <Button Grid.Column="1" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}, Path=DataContext.CloseTabCommand}" CommandParameter="{Binding .}" Content="Ex"/>
+                            <Button Grid.Column="1" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}, Path=DataContext.CloseTabCommand}" CommandParameter="{Binding .}" Style="{StaticResource CloseTabButtonStyle}"/>
                         </Grid>
                     </DataTemplate>
                 </TabControl.ItemTemplate>
@@ -35,7 +42,7 @@
                     <DataTemplate>
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="37"/>
+                                <RowDefinition Height="22"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
@@ -45,14 +52,21 @@
                                 <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
 
+                            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+                                <Button Command="{Binding BackCommand}" Style="{StaticResource BackButtonStyle}"/>
+                                <Button Command="{Binding ForwardCommand}" Style="{StaticResource ForwardButtonStyle}"/>
+                                <Button Command="{Binding RefreshCommand}" Style="{StaticResource RefreshButtonStyle}" Visibility="{Binding IsRefreshVisible, Converter={StaticResource GenericBooleanConverter}}"/>
+                                <Button Command="{Binding StopCommand}" Style="{StaticResource StopButtonStyle}" Visibility="{Binding IsRefreshVisible, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}"/>
+                            </StackPanel>
+                            
                             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding WebAddress, UpdateSourceTrigger=PropertyChanged}">
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Enter" Command="{Binding NavigateCommand}"/>
                                 </TextBox.InputBindings>
                             </TextBox>
 
-                            <Button Grid.Row="0" Grid.Column="2" Command="{Binding NavigateCommand}" Content="GO"/>
-                            <controls:InternetWebBrowser Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Uri="{Binding Uri}"/>
+                            <Button Grid.Row="0" Grid.Column="2" Command="{Binding NavigateCommand}" Style="{StaticResource MenuButtonStyle}"/>
+                            <controls:InternetWebBrowser Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Uri="{Binding Uri, Mode=TwoWay}"/>
                         </Grid>
                     </DataTemplate>
                 </TabControl.ContentTemplate>
@@ -60,11 +74,11 @@
         </Grid>
 
         <Grid Grid.Row="0" Background="Transparent" Panel.ZIndex="100" Margin="{Binding ButtonAddMargin}">
-            <Button Command="{Binding AddTabCommand}" Content="Add" HorizontalAlignment="Left"/>
+            <Button Command="{Binding AddTabCommand}" HorizontalAlignment="Left" Style="{StaticResource AddTabButtonStyle}"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="Min"/>
-                <Button Content="Max"/>
-                <Button Content="Close"/>
+                <Button Command="{Binding MinimizeCommand}" CommandParameter="{Binding ElementName=window}" Style="{StaticResource MinimizeButtonStyle}"/>
+                <Button Command="{Binding ToggleCommand}" CommandParameter="{Binding ElementName=window}" Content="{Binding ToggleButtonContent}" Style="{StaticResource ToggleButtonStyle}"/>
+                <Button Command="{Binding CloseCommand}" CommandParameter="{Binding ElementName=window}" Style="{StaticResource CloseButtonStyle}"/>
             </StackPanel>
 
             <i:Interaction.Behaviors>
