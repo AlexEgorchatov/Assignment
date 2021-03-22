@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Assignment"
         xmlns:tools="clr-namespace:Assignment.Tools"
+        xmlns:controls="clr-namespace:Assignment.Controls"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" WindowStyle="None">
@@ -33,7 +34,20 @@
                 <TabControl.ContentTemplate>
                     <DataTemplate>
                         <Grid>
-                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="37"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding WebAddress}"/>
+                            <Button Grid.Row="0" Grid.Column="2" Command="{Binding NavigateCommand}" Content="GO"/>
+                            <controls:InternetWebBrowser Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Uri="{Binding Uri}"/>
                         </Grid>
                     </DataTemplate>
                 </TabControl.ContentTemplate>
