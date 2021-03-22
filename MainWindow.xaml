@@ -19,16 +19,29 @@
             <TabControl ItemsSource="{Binding Tabs}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Height="30" Width="{Binding HeaderWidth}">
-                            <TextBlock Text="{Binding Header}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" TextTrimming="CharacterEllipsis"/>
-                        </Border>
+                        <Grid Height="30" Width="{Binding HeaderWidth}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Grid.Column="0" Text="{Binding Header}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" TextTrimming="CharacterEllipsis"/>
+                            <Button Grid.Column="1" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabControl}}, Path=DataContext.CloseTabCommand}" CommandParameter="{Binding .}" Content="Ex"/>
+                        </Grid>
                     </DataTemplate>
                 </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            
+                        </Grid>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
             </TabControl>
         </Grid>
 
-        <Grid Grid.Row="0" Background="Transparent" Panel.ZIndex="100">
-            <Button Command="{Binding AddTabCommand}" Content="Add" Margin="{Binding ButtonAddMargin}" HorizontalAlignment="Left"/>
+        <Grid Grid.Row="0" Background="Transparent" Panel.ZIndex="100" Margin="{Binding ButtonAddMargin}">
+            <Button Command="{Binding AddTabCommand}" Content="Add" HorizontalAlignment="Left"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Content="Min"/>
                 <Button Content="Max"/>

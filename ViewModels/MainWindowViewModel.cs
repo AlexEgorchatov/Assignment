@@ -2,7 +2,6 @@
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Assignment.ViewModels
 {
@@ -10,16 +9,15 @@ namespace Assignment.ViewModels
     {
         #region Private Fields
 
+        private const double _headerMargin = 12;
         private DelegateCommand _addTabCommand;
+        private DelegateCommand<TabViewModel> _closeTabCommand;
         private double _headerWidth = 100;
         private ObservableCollection<TabViewModel> _tabs;
-        private const double _headerMargin = 12;
 
         #endregion
 
         #region Public Properties
-
-        public Thickness ButtonAddMargin => new Thickness(Tabs.Count * (_headerWidth + _headerMargin) + 10, 0, 0, 0);
 
         public DelegateCommand AddTabCommand
         {
@@ -28,6 +26,19 @@ namespace Assignment.ViewModels
                 return _addTabCommand ?? (_addTabCommand = new DelegateCommand(() =>
                 {
                     Tabs.Add(new TabViewModel(_headerWidth));
+                }));
+            }
+        }
+
+        public Thickness ButtonAddMargin => new Thickness(Tabs.Count * (_headerWidth + _headerMargin) + 10, 0, 0, 0);
+
+        public DelegateCommand<TabViewModel> CloseTabCommand
+        {
+            get
+            {
+                return _closeTabCommand ?? (_closeTabCommand = new DelegateCommand<TabViewModel>((tab) =>
+                {
+                    Tabs.Remove(tab);
                 }));
             }
         }
